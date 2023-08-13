@@ -29,19 +29,38 @@
         <p>
             @item.Text
         </p>
-        <button class="like-button" data-postid="@item.Id">Like</button>
-        <span class="like-count">@item.Likes.Count()</span> likes
+        <button class="like-button btn btn-warning" data-postid="@item.Id">Like</button>
+        <span class="like-count" data-postid="@item.Id">0</span> likes
+
+        <script>
+            $(document).ready(function () {
+                // Replace with your actual post ID
+                var postId = @item.Id
+                function updateLikeCount() {
+                    $.post("/Post/GetLikes/", { postId: postId }, function (data) {
+                        // Update the like count on the UI
+                        $(".like-count[data-postid=" + postId + "]").text(data.likeCount);
+                    });
+                }
+
+                // Initial load of like count
+                updateLikeCount();
+
+                // Set an interval to update the like count periodically (e.g., every 5 seconds)
+                setInterval(updateLikeCount, 5000); // Adjust the interval as needed
+            });
+        </script>
     </div>
 }
-@*
+
 <script>
     $(document).ready(function () {
         $(".like-button").click(function () {
             var postId = $(this).data("postid");
             $.post("/Post/LikePost", { postId: postId }, function (data) {
-                // Update the like count on the UI
-                $(".like-count[data-postid=" + postId + "]").text(data.LikeCount);
+                // Update the like count on the 
+                $(".like-count[data-postid=" + postId + "]").text(data.likeCount);
             });
         });
     });
-</script>*@
+</script>
