@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container bg-black my-3 mx-auto p-3 col-10" style="border-radius: 20px;">
+    <form method="post" asp-controller="Home" asp-action="AddPost">
+        <div class="form-floating border-0 rounded-3 yellow-bg mb-3">
+            <textarea class="form-control bg-transparent border-0" placeholder="Write a post here" id="floatingTextarea2" style="min-height: 100px" name="PostText"></textarea>
+            <label for="floatingTextarea2" class="bg-transparent">Write what you want...</label>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-warning">Post</button>
+        </div>
+    </form>
+</div>
+
+<style>
+    a:hover {
+        color: #FFE227;
+    }
+</style>
+
+@foreach (var item in ViewBag.Posts) 
+{
+    <div class="container bg-black my-3 mx-auto p-3 col-10 yellow-text" style="border-radius: 20px;">
+        <a class="display-3 fs-6 fw-bold yellow-text text-decoration-none" asp-controller="Home" asp-action="ViewUser" asp-route-id="@item.Author.Id">
+            @item.Author.Name
+        </a>
+        <p>
+            @item.Text
+        </p>
+        <button class="like-button" data-postid="@item.Id">Like</button>
+        <span class="like-count">@item.Likes.Count()</span> likes
+    </div>
+}
+@*
+<script>
+    $(document).ready(function () {
+        $(".like-button").click(function () {
+            var postId = $(this).data("postid");
+            $.post("/Post/LikePost", { postId: postId }, function (data) {
+                // Update the like count on the UI
+                $(".like-count[data-postid=" + postId + "]").text(data.LikeCount);
+            });
+        });
+    });
+</script>*@

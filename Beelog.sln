@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beelog", "Beelog\Beelog.csproj", "{5DF0DC7E-46DC-4C6C-88D4-0F0A8FB1F66B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5DF0DC7E-46DC-4C6C-88D4-0F0A8FB1F66B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DF0DC7E-46DC-4C6C-88D4-0F0A8FB1F66B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DF0DC7E-46DC-4C6C-88D4-0F0A8FB1F66B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DF0DC7E-46DC-4C6C-88D4-0F0A8FB1F66B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C6512725-0E77-410F-B009-4B5CBA459BC6}
+	EndGlobalSection
+EndGlobal

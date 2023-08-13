@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewData["Title"] = "SignIn";
+}
+<div class="container bg-black my-3 mx-auto p-3 col-10" style="border-radius: 20px;">
+    <div class="text-center yellow-text mb-3">
+        <h3 class="display-3 fs-1">Sign In</h3>
+    </div>
+    <form method="post" asp-route="SignIn">
+        @if (ViewBag.emailMsg == null)
+        {
+            <div class="form-floating mb-3 yellow-bg rounded-3 col-11 mx-auto">
+                <input type="email" class="form-control bg-transparent border-0" id="floatingInputEmail" placeholder="email" name="Email" required>
+                <label for="floatingInputEmail" class="bg-transparent">Email Address</label>
+            </div>
+        }
+        else
+        {
+            <div class="form-floating mb-3 yellow-bg rounded-3 col-11 mx-auto">
+                <input type="email" class="form-control bg-transparent border-0" id="floatingInputEmail" placeholder="email" name="Email" value="@ViewBag.Email" required>
+                <label for="floatingInputEmail" class="bg-transparent">Email Address</label>
+            </div>
+        }
+        <div class="form-floating mb-3 yellow-bg rounded-3 col-11 mx-auto">
+            <input type="password" class="form-control bg-transparent border-0" id="floatingInputPassword" placeholder="password" name="Password" required>
+            <label for="floatingInputPassword" class="bg-transparent">Password</label>
+        </div>
+        @if (ViewBag.emailMsg != null)
+        {
+            <div class="text-danger col-11 mx-auto mb-3">@ViewBag.emailMsg</div>
+        }        
+        <div class="text-center">
+            <button type="submit" class="btn btn-warning">Sign In</button>
+        </div>
+    </form>
+</div>

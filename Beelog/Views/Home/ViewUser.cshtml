@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewData["Title"] = "ViewUser";
+}
+
+<div class="container bg-black my-3 mx-auto p-3 col-10 yellow-text text-center" style="border-radius: 20px;">
+    <style>
+        a:hover{
+            color: #FFE227;
+        }
+    </style>
+    <h3 class="display-3 fs-3 fw-bold yellow-text">
+        @ViewBag.User.Name - <a class="text-decoration-none yellow-text" href="mailto:@ViewBag.User.Email">@ViewBag.User.Email</a>
+    </h3>
+</div>
+
+@foreach (var item in ViewBag.Posts)
+{
+    <div class="container bg-black my-3 mx-auto p-3 col-10 yellow-text" style="border-radius: 20px;">
+        <h3 class="display-3 fs-6 fw-bold yellow-text text-decoration-none">
+            @item.Author.Name
+        </h3>
+        <p>
+            @item.Text
+        </p>
+    </div>
+}
