@@ -23,8 +23,10 @@ namespace Beelog.Controllers
             {
                 return RedirectToAction("SignIn", "Authentication");
             }
-            var posts = _context.Posts.Where(p => p.Author == SignedIn.GetCurrentUser(HttpContext, _context)).OrderByDescending(p => p.Id);
+            var posts = _context.Posts.Where(p => p.Author == SignedIn.GetCurrentUser(HttpContext, _context))
+                .Include(p => p.Likes).OrderByDescending(p => p.Id);
             ViewBag.Posts = posts;
+            ViewBag.HttpContext = HttpContext;
             return View();
         }
 
@@ -36,6 +38,38 @@ namespace Beelog.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpPost]
+        public IActionResult AddComments(IFormCollection fc)
+        {
+            var user = SignedIn.GetCurrentUser(HttpContext, _context);
+            var PostId = Convert.ToInt32(fc["PostId"]);
+            Comment comment = new Comment()
+            {
+                PostId = PostId,
+                Post = _context.Posts.FirstOrDefault(p => p.Id == PostId),
+                UserId = user.Id,
+                User = user,
+                Text = fc["CommentText"]
+            };
+            _context.Comments.Add(comment);
+            _context.SaveChanges();
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        [Route("Post/GetComments")]
+        public IActionResult GetComments(int postId)
+        {
+            List<Comment> comments = _context.Comments.Include(c => c.User).Where(c => c.PostId == postId)
+                .OrderByDescending(c => c.Id).ToList();
+            foreach (var comment in comments)
+            {
+                comment.User.Comments = null;
+            }
+            return Json(comments);
+        }
+
 
         [HttpGet]
         public IActionResult ViewUser(int id)
@@ -65,8 +99,15 @@ namespace Beelog.Controllers
                 });
                 _context.SaveChanges();
             }
+            else
+            {
+                _context.Likes.Remove(
+                    _context.Likes.FirstOrDefault(l => l.UserId == userId && l.PostId == postId)
+                );
+                _context.SaveChanges();
+            }
 
-            int likeCount = _context.Posts.FirstOrDefault(p => p.Id == postId).Likes.Count();
+            int likeCount = _context.Posts.Include(p => p.Likes).FirstOrDefault(p => p.Id == postId).Likes.Count();
             return Json(new { LikeCount = likeCount });
         }
         [HttpPost]

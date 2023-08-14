@@ -1,4 +1,5 @@
-﻿@{
+﻿@using Beelog.UtilityClasses;
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -29,26 +30,75 @@
         <p>
             @item.Text
         </p>
-        <button class="like-button btn btn-warning" data-postid="@item.Id">Like</button>
-        <span class="like-count" data-postid="@item.Id">0</span> likes
+        <div class="col-12">
+        <h4 class="display-6 fs-6"><span class="like-count" data-postid="@item.Id">0</span> likes</h4>
+        @if (!Liked.isLiked(ViewBag.HttpContext,item))
+        {
+            <button class="like-button btn btn-warning" data-postid="@item.Id">Like</button>
+        }
+        else
+        {
+            <button class="like-button btn btn-warning" data-postid="@item.Id">Unlike</button>
+        }
+
+        <button type="button" class="btn btn-warning view-comments-button" data-bs-toggle="modal" data-bs-target="#exampleModal-@item.Id" data-postid="@item.Id">
+            View Comments
+        </button>
+        </div>
+        <div class="modal fade" id="exampleModal-@item.Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body bg-black">
+                        <a class="display-3 fs-6 fw-bold yellow-text text-decoration-none" asp-controller="Home" asp-action="ViewUser" asp-route-id="@item.Author.Id">
+                            @item.Author.Name
+                        </a>
+                        <p>
+                            @item.Text
+                        </p>
+                        @if (!Liked.isLiked(ViewBag.HttpContext, item))
+                        {
+                            <button class="like-button btn btn-warning" data-postid="@item.Id">Like</button>
+                        }
+                        else
+                        {
+                            <button class="like-button btn btn-warning" data-postid="@item.Id">Unlike</button>
+                        }
+                        <span class="like-count" data-postid="@item.Id">0</span> likes
+
+                    </div>
+                    <div class="modal-body yellow-bg text-black">
+                        <div class="container bg-black my-3 mx-auto p-3 col-11" style="border-radius: 20px;">
+                            <form method="post" asp-controller="Home" asp-action="AddComments">
+                                <div class="form-floating border-0 rounded-3 yellow-bg mb-3">
+                                    <input type="hidden" name="PostId" value="@item.Id">
+                                    <textarea class="form-control bg-transparent border-0" placeholder="Write a post here" id="floatingTextarea3" style="min-height: 100px" name="CommentText"></textarea>
+                                    <label for="floatingTextarea3" class="bg-transparent">Write comment...</label>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-warning">Comment</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="comments-container">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <script>
             $(document).ready(function () {
-                // Replace with your actual post ID
                 var postId = @item.Id
                 function updateLikeCount() {
                     $.post("/Post/GetLikes/", { postId: postId }, function (data) {
-                        // Update the like count on the UI
                         $(".like-count[data-postid=" + postId + "]").text(data.likeCount);
                     });
                 }
-
-                // Initial load of like count
                 updateLikeCount();
-
-                // Set an interval to update the like count periodically (e.g., every 5 seconds)
-                setInterval(updateLikeCount, 5000); // Adjust the interval as needed
+                setInterval(updateLikeCount, 5000);
             });
+
         </script>
     </div>
 }
@@ -56,11 +106,49 @@
 <script>
     $(document).ready(function () {
         $(".like-button").click(function () {
+            var $buttons = $(this).closest(".container").find(".like-button");
             var postId = $(this).data("postid");
             $.post("/Post/LikePost", { postId: postId }, function (data) {
-                // Update the like count on the 
-                $(".like-count[data-postid=" + postId + "]").text(data.likeCount);
+                var $likeCount = $(".like-count[data-postid=" + postId + "]");
+                $likeCount.text(data.likeCount);
+                $buttons.each(function () {
+                    var $button = $(this);
+                    if ($button.text() == "Like") {
+                        $button.text("Unlike");
+                    } else {
+                        $button.text("Like");
+                    }
+                });
             });
         });
     });
+
+    $(document).ready(function () {
+        $(".view-comments-button").click(function () {
+            var postId = $(this).data("postid");
+            var $commentsContainer = $(".comments-container");
+            $commentsContainer.empty();
+            $.post("/Post/GetComments", { postId: postId }, function (comments) {
+                if (comments.length > 0) {
+                    $.each(comments, function (index, comment) {
+                        var commentHtml = '<div class="container bg-black my-3 mx-auto p-3 col-11 yellow-text" style="border-radius: 20px;">'
+                            + '<a class="display-3 fs-6 fw-bold yellow-text text-decoration-none" href="/Home/ViewUser/' + comment.user.id + '" >' +
+                            comment.user.name +
+                            '</a>' +
+                            '<p>' +
+                            comment.text +
+                            '</p>'
+                            + '</div > ';
+                        $commentsContainer.append(commentHtml);
+                    });
+                } else {
+                    var commentHtml = '<div class="container bg-black my-3 mx-auto p-3 col-11 yellow-text text-center" style="border-radius: 20px;">'+
+                        '<p style="margin-bottom: 0px;">No comments yet.</p>'
+                        + '</div > ';
+                    $commentsContainer.append(commentHtml);
+                }
+            });
+        });
+    });
+
 </script>
