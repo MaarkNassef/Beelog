@@ -6,7 +6,7 @@
 <div class="container bg-black my-3 mx-auto p-3 col-10" style="border-radius: 20px;">
     <form method="post" asp-controller="Home" asp-action="AddPost">
         <div class="form-floating border-0 rounded-3 yellow-bg mb-3">
-            <textarea class="form-control bg-transparent border-0" placeholder="Write a post here" id="floatingTextarea2" style="min-height: 100px" name="PostText"></textarea>
+            <textarea class="form-control bg-transparent border-0" placeholder="Write a post here" id="floatingTextarea2" style="min-height: 100px" name="PostText" required></textarea>
             <label for="floatingTextarea2" class="bg-transparent">Write what you want...</label>
         </div>
         <div class="text-center">
@@ -71,7 +71,7 @@
                             <form method="post" asp-controller="Home" asp-action="AddComments">
                                 <div class="form-floating border-0 rounded-3 yellow-bg mb-3">
                                     <input type="hidden" name="PostId" value="@item.Id">
-                                    <textarea class="form-control bg-transparent border-0" placeholder="Write a post here" id="floatingTextarea3" style="min-height: 100px" name="CommentText"></textarea>
+                                    <textarea class="form-control bg-transparent border-0" placeholder="Write a post here" id="floatingTextarea3" style="min-height: 100px" name="CommentText" required></textarea>
                                     <label for="floatingTextarea3" class="bg-transparent">Write comment...</label>
                                 </div>
                                 <div class="text-center">
