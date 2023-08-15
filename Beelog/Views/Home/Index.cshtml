@@ -24,7 +24,7 @@
 @foreach (var item in ViewBag.Posts) 
 {
     <div class="container bg-black my-3 mx-auto p-3 col-10 yellow-text" style="border-radius: 20px;">
-        <a class="display-3 fs-6 fw-bold yellow-text text-decoration-none" asp-controller="Home" asp-action="ViewUser" asp-route-id="@item.Author.Id">
+        <a class="display-3 fs-6 fw-bold yellow-text text-decoration-none" asp-controller="Profile" asp-action="ViewUser" asp-route-id="@item.Author.Id">
             @if (!item.Author.ProfilePicturePath.Equals(""))
             {
                 <img src="~/images/profile_images/@item.Author.ProfilePicturePath" width="50px" alt="Profile Picture" class="profile-picture" style="border-radius: 20px;" />
@@ -57,7 +57,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-body bg-black">
-                        <a class="display-3 fs-6 fw-bold yellow-text text-decoration-none" asp-controller="Home" asp-action="ViewUser" asp-route-id="@item.Author.Id">
+                        <a class="display-3 fs-6 fw-bold yellow-text text-decoration-none" asp-controller="Profile" asp-action="ViewUser" asp-route-id="@item.Author.Id">
                             @if (!item.Author.ProfilePicturePath.Equals(""))
                             {
                                 <img src="~/images/profile_images/@item.Author.ProfilePicturePath" width="50px" alt="Profile Picture" class="profile-picture" style="border-radius: 20px;" />

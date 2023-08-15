@@ -1,13 +1,13 @@
 ﻿@using Beelog.UtilityClasses;
-
 @{
-    ViewData["Title"] = "ViewUser";
+    ViewData["Title"] = "View Profile";
 }
+
 <div class="container bg-black my-3 mx-auto p-3 col-10 yellow-text" style="border-radius: 20px;">
     <div class="row">
         <div class="col col-3">
             @if (ViewBag.EnableEditProfile)
-            {    
+            {
                 <a id="profile-picture-link" data-toggle="modal" data-target="#uploadModal" style="cursor: pointer">
                     @if (!ViewBag.User.ProfilePicturePath.Equals(""))
                     {
@@ -38,8 +38,41 @@
                 }
             </style>
             <h3 class="display-3 fs-3 fw-bold yellow-text">
-                 @ViewBag.User.Name - <a class="text-decoration-none yellow-text" href="mailto:@ViewBag.User.Email">@ViewBag.User.Email</a>
+                @ViewBag.User.Name - <a class="text-decoration-none yellow-text" href="mailto:@ViewBag.User.Email">@ViewBag.User.Email</a>
             </h3>
+            <h5 class="display-3 fs-5 yellow-text">
+                @ViewBag.User.Bio
+            </h5>
+            @if (ViewBag.EnableEditProfile)
+            {
+                <div class="col-12 text-end">
+                    <button type="button" class="btn btn-warning view-comments-button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        Edit bio
+                    </button>
+                </div>
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header border-bottom-0 bg-black">
+                                <h5 class="modal-title" id="uploadModalLabel">Edit your bio</h5>
+                            </div>
+                            <div class="modal-body yellow-bg text-black">
+                                <div class="container bg-black my-3 mx-auto p-3 col-11" style="border-radius: 20px;">
+                                    <form method="post" asp-controller="Profile" asp-action="EditBio">
+                                        <div class="form-floating border-0 rounded-3 yellow-bg mb-3">
+                                            <textarea class="form-control bg-transparent border-0" placeholder="Edit your bio" id="floatingTextarea3" style="min-height: 100px" name="BioText" required></textarea>
+                                            <label for="floatingTextarea3" class="bg-transparent">Edit your bio...</label>
+                                        </div>
+                                        <div class="text-center">
+                                            <button type="submit" class="btn btn-warning">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -47,17 +80,19 @@
 <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-black yellow-text border-bottom-0">
                 <h5 class="modal-title" id="uploadModalLabel">Upload Profile Picture</h5>
             </div>
-            <div class="modal-body">
-                <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="UploadProfilePicture">
-                    <div class="mb-3">
-                        <label for="formFile" class="form-label">Default file input example</label>
-                        <input class="form-control" type="file" id="formFile" name="ProfilePicture">
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-warning">Upload</button>
+            <div class="modal-body yellow-bg">
+                <form method="post" enctype="multipart/form-data" asp-controller="Profile" asp-action="UploadProfilePicture">
+                    <div class="container bg-black my-3 mx-auto p-3 col-11 yellow-text" style="border-radius: 20px;">
+                        <div class="mb-3">
+                            <label for="formFile" class="form-label">Upload new profile picture</label>
+                            <input class="form-control yellow-bg " type="file" id="formFile" name="ProfilePicture">
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-warning">Upload</button>
+                        </div>
                     </div>
                 </form>
             </div>
