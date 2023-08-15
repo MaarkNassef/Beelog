@@ -27,8 +27,14 @@ namespace Beelog.Controllers
             {
                 return RedirectToAction("SignIn", "Authentication");
             }
-            var posts = _context.Posts.Where(p => p.Author == SignedIn.GetCurrentUser(HttpContext, _context))
-                .Include(p => p.Likes).OrderByDescending(p => p.Id);
+            //var posts = _context.Posts.Where(p => p.Author == SignedIn.GetCurrentUser(HttpContext, _context))
+            //    .Include(p => p.Likes).OrderByDescending(p => p.Id);
+
+            var currentUserId = Convert.ToInt32(HttpContext.Session.GetString("uid"));
+            var currentUser = _context.Users.Include(u => u.Following).FirstOrDefault(u => u.Id == currentUserId);
+            var posts = _context.Posts.Include(p => p.Likes)
+                .Where(p => currentUser.Following.Contains(p.Author)).OrderByDescending(p => p.Id);
+
             ViewBag.Posts = posts;
             ViewBag.HttpContext = HttpContext;
             return View();

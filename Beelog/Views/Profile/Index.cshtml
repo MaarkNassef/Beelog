@@ -18,6 +18,12 @@
                         <img src="~/images/profile_images/bee.jpg" width="200px" alt="Profile Picture" class="profile-picture" style="border-radius: 20px;" />
                     }
                 </a>
+
+                <script>
+                    document.getElementById("profile-picture-link").addEventListener("click", function () {
+                        $('#uploadModal').modal('show');
+                    });
+                </script>
             }
             else
             {
@@ -46,7 +52,7 @@
             @if (ViewBag.EnableEditProfile)
             {
                 <div class="col-12 text-end">
-                    <button type="button" class="btn btn-warning view-comments-button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">
                         Edit bio
                     </button>
                 </div>
@@ -71,6 +77,32 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-12 text-start">
+                    <h5 class="display-3 fs-6 yellow-text">
+                        @ViewBag.User.Follower.Count Followers
+                    </h5>
+                    @if (ViewBag.isFollowing != null && ViewBag.isFollowing)
+                    {
+                        <form asp-controller="Profile" asp-action="UnfollowUser">
+                            <input type="hidden" name="followingId" value="@ViewBag.User.Id" />
+                            <button type="submit" class="btn btn-warning">
+                                Unfollow
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-controller="Profile" asp-action="FollowUser">
+                            <input type="hidden" name="followingId" value="@ViewBag.User.Id" />
+                            <button type="submit" class="btn btn-warning">
+                                Follow
+                            </button>
+                        </form>
+                    }
                 </div>
             }
         </div>
@@ -198,9 +230,6 @@
 }
 
 <script>
-    document.getElementById("profile-picture-link").addEventListener("click", function () {
-        $('#uploadModal').modal('show');
-    });
 
     $(document).ready(function () {
         $(".like-button").click(function () {

@@ -36,9 +36,18 @@ namespace Beelog.Controllers
             {
                 return RedirectToAction("SignIn", "Authentication");
             }
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            var user = _context.Users.Include(u => u.Follower).FirstOrDefault(u => u.Id == id);
             ViewBag.User = user;
             ViewBag.EnableEditProfile = (id == Convert.ToInt32(HttpContext.Session.GetString("uid")));
+            if (!ViewBag.EnableEditProfile)
+            {
+                var currentUserId = Convert.ToInt32(HttpContext.Session.GetString("uid"));
+                var currentUser = _context.Users.FirstOrDefault(u => u.Id == currentUserId);
+                if (user.Follower.Contains(currentUser))
+                {
+                    ViewBag.isFollowing = true;
+                }
+            }
             ViewBag.HttpContext = HttpContext;
             ViewBag.Posts = _context.Posts.Include(p => p.Likes).Where(p => p.Author == user).OrderByDescending(p => p.Id);
             return View("Index");
@@ -95,6 +104,40 @@ namespace Beelog.Controllers
             _context.Update(user);
             _context.SaveChanges();
             return RedirectToAction("ViewUser", new { id = userId });
+        }
+
+        [HttpPost]
+        public IActionResult FollowUser(IFormCollection fc)
+        {
+            var currentUserId = Convert.ToInt32(HttpContext.Session.GetString("uid"));
+            var currentUser = _context.Users.Include(u => u.Following).FirstOrDefault(u => u.Id == currentUserId);
+
+            var otherUserId = Convert.ToInt32(fc["followingId"]);
+            var otherUser = _context.Users.Include(u => u.Follower).FirstOrDefault(u => u.Id == otherUserId);
+
+            currentUser.Following.Add(otherUser);
+            otherUser.Follower.Add(currentUser);
+            _context.Update(currentUser);
+            _context.Update(otherUser);
+            _context.SaveChanges();
+            return RedirectToAction("ViewUser", new { id = otherUserId });
+        }
+
+        [HttpPost]
+        public IActionResult UnfollowUser(IFormCollection fc)
+        {
+            var currentUserId = Convert.ToInt32(HttpContext.Session.GetString("uid"));
+            var currentUser = _context.Users.Include(u => u.Following).FirstOrDefault(u => u.Id == currentUserId);
+
+            var otherUserId = Convert.ToInt32(fc["followingId"]);
+            var otherUser = _context.Users.Include(u => u.Follower).FirstOrDefault(u => u.Id == otherUserId);
+
+            currentUser.Following.Remove(otherUser);
+            otherUser.Follower.Remove(currentUser);
+            _context.Update(currentUser);
+            _context.Update(otherUser);
+            _context.SaveChanges();
+            return RedirectToAction("ViewUser", new { id = otherUserId });
         }
     }
 }
