@@ -33,10 +33,19 @@ namespace Beelog.Controllers
             var currentUserId = Convert.ToInt32(HttpContext.Session.GetString("uid"));
             var currentUser = _context.Users.Include(u => u.Following).FirstOrDefault(u => u.Id == currentUserId);
             var posts = _context.Posts.Include(p => p.Likes)
-                .Where(p => currentUser.Following.Contains(p.Author)).OrderByDescending(p => p.Id);
+                .Where(p => currentUser.Following.Contains(p.Author) || p.Author.Id == currentUserId).OrderByDescending(p => p.Id).ToList();
 
             ViewBag.Posts = posts;
             ViewBag.HttpContext = HttpContext;
+            ViewBag.topUsers = _context.Users.Include(u => u.Follower).OrderByDescending(u => u.Follower.Count).ToList();
+            foreach (var item in ViewBag.topUsers)
+            {
+                if (item.Id == currentUserId)
+                {
+                    ViewBag.topUsers.Remove(item);
+                    break;
+                }
+            }
             return View();
         }
 

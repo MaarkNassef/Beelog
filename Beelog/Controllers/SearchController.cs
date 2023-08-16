@@ -1,4 +1,5 @@
 ﻿using Beelog.Data;
+using Beelog.Models;
 using Beelog.UtilityClasses;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +27,7 @@ namespace Beelog.Controllers
             }
             var similarNames = _context.Users
                 .Where(u => u.Name.ToLower().Contains(searchTerm.ToLower()))
-                .Select(u => new { Id = u.Id, Name = u.Name })
+                .Select(u => new { Id = u.Id, Name = u.Name , ProfilePicturePath = u.ProfilePicturePath })
                 .ToList();
 
             return Json(similarNames);

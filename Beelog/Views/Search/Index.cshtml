@@ -26,12 +26,23 @@
                 data: { searchTerm: searchTerm },
                 success: function (data) {
                     $.each(data, function (index, user) {
-                        var htmlContent = '<div class="container bg-black my-3 mx-auto p-3 col-10 yellow-text" style="border-radius: 20px;">'
-                            + '<a class="display-3 fs-5 fw-bold yellow-text text-decoration-none" href="/Profile/ViewUser/' + user.id + '" >' +
-                            user.name +
-                            '</a>' +
-                            '</div>'
+                        if (user.profilePicturePath.length == 0) {
+                            var htmlContent = '<div class="container bg-black my-3 mx-auto p-3 col-10 yellow-text" style="border-radius: 20px;">'
+                                + '<a class="display-3 fs-5 fw-bold yellow-text text-decoration-none" href="/Profile/ViewUser/' + user.id + '" >' +
+                                '<img src="/images/profile_images/bee.jpg" width="50px" alt="Profile Picture" class="profile-picture me-1" style="border-radius: 20px;" />' +
+                                user.name +
+                                '</a>' +
+                                '</div>'
+                                similarNamesContainer.append(htmlContent);
+                        } else {
+                            var htmlContent = '<div class="container bg-black my-3 mx-auto p-3 col-10 yellow-text" style="border-radius: 20px;">'
+                                + '<a class="display-3 fs-5 fw-bold yellow-text text-decoration-none" href="/Profile/ViewUser/' + user.id + '" >' +
+                                '<img src="/images/profile_images/' + user.profilePicturePath + '" width="50px" alt="Profile Picture" class="profile-picture me-1" style="border-radius: 20px;" />' +
+                                user.name +
+                                '</a>' +
+                                '</div>'
                             similarNamesContainer.append(htmlContent);
+                        }
                     });
                 },
                 error: function () {

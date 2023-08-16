@@ -27,11 +27,11 @@
         <a class="display-3 fs-6 fw-bold yellow-text text-decoration-none" asp-controller="Profile" asp-action="ViewUser" asp-route-id="@item.Author.Id">
             @if (!item.Author.ProfilePicturePath.Equals(""))
             {
-                <img src="~/images/profile_images/@item.Author.ProfilePicturePath" width="50px" alt="Profile Picture" class="profile-picture" style="border-radius: 20px;" />
+                <img src="~/images/profile_images/@item.Author.ProfilePicturePath" width="50px" alt="Profile Picture" class="profile-picture me-1" style="border-radius: 20px;" />
             }
             else
             {
-                <img src="~/images/profile_images/bee.jpg" width="50px" alt="Profile Picture" class="profile-picture" style="border-radius: 20px;" />
+                <img src="~/images/profile_images/bee.jpg" width="50px" alt="Profile Picture" class="profile-picture me-1" style="border-radius: 20px;" />
             }
             @item.Author.Name
         </a>
@@ -119,6 +119,37 @@
     </div>
 }
 
+@if (ViewBag.Posts.Count == 0)
+{
+    <div class="container bg-black my-3 mx-auto p-3 col-10 yellow-text text-center" style="border-radius: 20px;">
+        <p class="mb-0">
+            No posts to show! follow people to see their posts.
+        </p>
+    </div>
+
+    <div class="container bg-black my-3 mx-auto p-3 col-10 yellow-text" style="border-radius: 20px;">
+        <h3 class="display-6 fs-5 mb-3">
+            See our sugesstions...
+        </h3>
+        @foreach (var item in ViewBag.topUsers)
+        {
+            <div class="container yellow-bg my-3 mx-auto p-3 col-10 yellow-text" style="border-radius: 20px;">
+                <a class="display-3 fs-5 fw-bold text-black text-decoration-none" asp-controller="Profile" asp-action="ViewUser" asp-route-id="@item.Id">
+                    @if (!item.ProfilePicturePath.Equals(""))
+                    {
+                        <img src="~/images/profile_images/@item.ProfilePicturePath" width="50px" alt="Profile Picture" class="profile-picture me-1" style="border-radius: 20px;" />
+                    }
+                    else
+                    {
+                        <img src="~/images/profile_images/bee.jpg" width="50px" alt="Profile Picture" class="profile-picture me-1" style="border-radius: 20px;" />
+                    }
+                    @item.Name
+                </a>
+            </div>
+        }
+    </div>
+}
+
 <script>
     $(document).ready(function () {
         $(".like-button").click(function () {
@@ -147,15 +178,31 @@
             $.post("/Post/GetComments", { postId: postId }, function (comments) {
                 if (comments.length > 0) {
                     $.each(comments, function (index, comment) {
-                        var commentHtml = '<div class="container bg-black my-3 mx-auto p-3 col-11 yellow-text" style="border-radius: 20px;">'
-                            + '<a class="display-3 fs-6 fw-bold yellow-text text-decoration-none" href="/Home/ViewUser/' + comment.user.id + '" >' +
-                            comment.user.name +
-                            '</a>' +
-                            '<p>' +
-                            comment.text +
-                            '</p>'
-                            + '</div > ';
-                        $commentsContainer.append(commentHtml);
+                        if (comment.user.profilePicturePath.length == 0) {
+                            var commentHtml = '<div class="container bg-black my-3 mx-auto p-3 col-11 yellow-text" style="border-radius: 20px;">'
+                                + '<a class="display-3 fs-6 fw-bold yellow-text text-decoration-none" href="/Profile/ViewUser/' + comment.user.id + '" >' +
+                                '<img src="/images/profile_images/bee.jpg" width="50px" alt="Profile Picture" class="profile-picture me-1" style="border-radius: 20px;" />' +
+                                comment.user.name +
+                                '</a>' +
+                                '<p>' +
+                                comment.text +
+                                '</p>'
+                                + '</div > ';
+
+                            $commentsContainer.append(commentHtml);
+                        } else {
+                            var commentHtml = '<div class="container bg-black my-3 mx-auto p-3 col-11 yellow-text" style="border-radius: 20px;">'
+                                + '<a class="display-3 fs-6 fw-bold yellow-text text-decoration-none" href="/Profile/ViewUser/' + comment.user.id + '" >' +
+                                '<img src="/images/profile_images/' + comment.user.profilePicturePath + '" width="50px" alt="Profile Picture" class="profile-picture me-1" style="border-radius: 20px;" />' +
+                                comment.user.name +
+                                '</a>' +
+                                '<p>' +
+                                comment.text +
+                                '</p>'
+                                + '</div > ';
+
+                            $commentsContainer.append(commentHtml);
+                        }
                     });
                 } else {
                     var commentHtml = '<div class="container bg-black my-3 mx-auto p-3 col-11 yellow-text text-center" style="border-radius: 20px;">'+
